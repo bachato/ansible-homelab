@@ -1,6 +1,6 @@
 ---
-ungrouped:
-  hosts:
+#ungrouped:
+#  hosts:
     #office-pi:
     #MacBookAir:
     #  ansible_connection: local
