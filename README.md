@@ -57,6 +57,10 @@ cd ansible-homelab
 # Install required collections
 ansible-galaxy install -r requirements.yml
 
+# Configure your Proxmox host
+cp proxmox.cfg.example proxmox.cfg
+# edit proxmox.cfg and set your Proxmox hostname
+
 # Set up your Proxmox API token
 export PROXMOX_API_TOKEN="your-token-here"
 
@@ -115,9 +119,15 @@ The `inventory/inventory.yaml` file defines:
 
 ## Configuration
 
-### Proxmox API Token
-The Proxmox API token is read from the `PROXMOX_API_TOKEN` environment variable:
+### Proxmox Connection Settings
 
+**Host** (`proxmox.cfg`, gitignored):
+```bash
+cp proxmox.cfg.example proxmox.cfg
+# edit proxmox.cfg and set your Proxmox hostname
+```
+
+**API token** (`PROXMOX_API_TOKEN` environment variable):
 ```bash
 # Option 1: Use the Bitwarden helper script (retrieves token from Bitwarden vault)
 eval "$(./unlock-bitwarden-proxmox.sh)"
@@ -127,7 +137,7 @@ export PROXMOX_API_TOKEN="your-token-here"
 ```
 
 ### Customizing for Your Environment
-1. Update `inventory/proxmox.yaml` with your Proxmox URL and credentials
+1. Copy `proxmox.cfg.example` to `proxmox.cfg` and set your Proxmox hostname
 2. Update `ansible.cfg` with your SSH key path and default user
 3. Tag your VMs in Proxmox with the roles you want applied
 

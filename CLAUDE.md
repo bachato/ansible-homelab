@@ -70,43 +70,57 @@ The repository uses a role-based approach where hosts are grouped by function:
 
 ## CI/CD Integration (Semaphore)
 
-### Secret Management Strategy
+### Configuration Files
 
-This repository uses environment variables for Proxmox API tokens, with `unlock-bitwarden-proxmox.sh` script for local development:
+#### `proxmox.cfg` (local, gitignored)
+Proxmox host settings are read from a local `proxmox.cfg` file (ini format). Copy the example and fill in your values:
+```bash
+cp proxmox.cfg.example proxmox.cfg
+# edit proxmox.cfg with your Proxmox host details
+```
 
-#### How It Works
-- **`inventory/proxmox.yaml:9`**: `token_secret: "{{ lookup('env', 'PROXMOX_API_TOKEN') }}"`
-- **`update.yaml:8`**: `proxmox_api_token: "{{ lookup('env', 'PROXMOX_API_TOKEN') }}"`
-- **`unlock-bitwarden-proxmox.sh`**: Script that retrieves the token from Bitwarden and sets `PROXMOX_API_TOKEN` env var (not needed in Semaphore)
+Example contents:
+```ini
+[proxmox]
+url = https://your-proxmox-host:8006
+host = your-proxmox-host
+```
+
+- **`inventory/proxmox.yaml:2`**: reads `url` from `proxmox.cfg`
+- **`update.yaml:22`**: reads `host` from `proxmox.cfg`
+
+#### API Token (`PROXMOX_API_TOKEN` env var)
+The API token is separate from the host config and still uses an environment variable:
+- **`unlock-bitwarden-proxmox.sh`**: retrieves token from Bitwarden and exports `PROXMOX_API_TOKEN`
+- **`inventory/proxmox.yaml:9`**: reads `PROXMOX_API_TOKEN` from environment
+- **`update.yaml:8`**: reads `PROXMOX_API_TOKEN` from environment
 
 #### Local Development
-Use the Bitwarden script to retrieve and set the token, then run playbooks:
 ```bash
+cp proxmox.cfg.example proxmox.cfg
+# edit proxmox.cfg
+
 eval "$(./unlock-bitwarden-proxmox.sh)"
 ansible-playbook update.yaml
 ```
 
-Or set the variable directly if you have the token:
+Or with token set directly:
 ```bash
 export PROXMOX_API_TOKEN="your-token-here"
 ansible-playbook update.yaml
 ```
 
-The script retrieves the token from a Bitwarden item (defaults to "proxmox ansible").
-
 #### Semaphore Configuration
-In Semaphore Task Configuration, set this environment variable:
-
+In Semaphore Task Configuration:
 - **`PROXMOX_API_TOKEN`**: Your Proxmox API token
-
-Semaphore will pass the env var to Ansible, which reads it from the environment - no script needed.
+- Provide `proxmox.cfg` via a file secret or Semaphore's file management
 
 ### Configuration Details
 
+- **`proxmox.cfg.example`**: Template for the local `proxmox.cfg` (tracked in git)
+- **`proxmox.cfg`**: Local Proxmox host config (gitignored, never committed)
 - **`unlock-bitwarden-proxmox.sh`**: Script that retrieves token from Bitwarden and exports `PROXMOX_API_TOKEN` (tracked in git - contains no secrets)
-- **`.gitignore`**: Uses wildcard patterns (`*token*`, `*secret*`) to ignore files that might contain secrets
-- **`inventory/proxmox.yaml:9`**: Reads `PROXMOX_API_TOKEN` from environment
-- **`update.yaml:8`**: Reads `PROXMOX_API_TOKEN` from environment
+- **`.gitignore`**: Ignores `proxmox.cfg` and wildcard patterns (`*token*`, `*secret*`)
 
 ### Benefits of This Approach
 

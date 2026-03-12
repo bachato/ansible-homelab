@@ -7,3 +7,4 @@
 *token*
 *password*
 .env
+proxmox.cfg
