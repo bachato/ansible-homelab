@@ -46,7 +46,7 @@
               become: true
               when:
                 - ansible_facts['pkg_mgr'] == 'apt'
-                - inventory_hostname in groups['proxmox_hosts']
+                - inventory_hostname in groups['proxmox']
 
             - name: "Update packages (apt)"
               ansible.builtin.apt:
@@ -55,7 +55,7 @@
               become: true
               when:
                 - ansible_facts['pkg_mgr'] == 'apt'
-                - inventory_hostname not in groups['proxmox_hosts']
+                - inventory_hostname not in groups['proxmox']
 
             - name: "Update packages (other)"
               ansible.builtin.package:

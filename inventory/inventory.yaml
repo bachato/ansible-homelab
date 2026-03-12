@@ -1,19 +1,12 @@
 ---
-physical_machines:
+ungrouped:
   hosts:
     #office-pi:
     #MacBookAir:
     #  ansible_connection: local
     #  ansible_python_interpreter: "{{ ansible_playbook_python }}"
-    pbs:
-    vlantest:
 
-proxmox_hosts:
-  hosts:
-    proxmox1:
-    pbs:
-
-vm_overrides:
+proxmox:
   hosts:
     proxmox1:
       ansible_user: root
