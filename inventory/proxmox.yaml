@@ -1,7 +1,7 @@
 plugin: community.proxmox.proxmox
 url: https://proxmox1.home.willem.vooijs.eu:8006
 validate_certs: false
-user: ansible@pve
+user: ansible@pam
 token_id: ansible
 # Token secret loaded from PROXMOX_API_TOKEN environment variable
 # Local: source load_proxmox_token.sh to set the env var

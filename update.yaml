@@ -20,7 +20,7 @@
       when: proxmox_vmid is defined
       community.proxmox.proxmox_snap:
         api_host: "proxmox1.home.willem.vooijs.eu"
-        api_user: ansible@pve
+        api_user: ansible@pam
         api_token_id: ansible
         api_token_secret: "{{ proxmox_api_token }}"
         validate_certs: false
@@ -46,7 +46,7 @@
               become: true
               when:
                 - ansible_facts['pkg_mgr'] == 'apt'
-                - inventory_hostname in groups['proxmox']
+                - inventory_hostname in groups['proxmox_nodes']
 
             - name: "Update packages (apt)"
               ansible.builtin.apt:
@@ -55,7 +55,7 @@
               become: true
               when:
                 - ansible_facts['pkg_mgr'] == 'apt'
-                - inventory_hostname not in groups['proxmox']
+                - inventory_hostname not in groups['proxmox_nodes']
 
             - name: "Update packages (other)"
               ansible.builtin.package:
@@ -84,7 +84,7 @@
       block:
         - name: "Pull and start containers"
           community.docker.docker_compose_v2:
-            project_src: ./docker
+            project_src: /home/willem/docker
             pull: always
   post_tasks:
     - name: "Cleanup Docker"
@@ -92,7 +92,7 @@
       block:
         - name: "Remove orphans"
           community.docker.docker_compose_v2:
-            project_src: ./docker
+            project_src: /home/willem/docker
             pull: never
             remove_orphans: true
         - name: "Prune system"

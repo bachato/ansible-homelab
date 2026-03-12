@@ -27,7 +27,25 @@ Designed for use with Semaphore or other CI/CD tools. Secrets are managed via en
 ### Prerequisites
 - Ansible 2.17+
 - A Proxmox VE cluster with API access
-- SSH key authentication configured
+- SSH key authentication configured (default key: `~/.ssh/id_ansible`, default user: `ansible`)
+
+#### Proxmox API Token
+Create an API token in Proxmox for the `ansible@pam` user with the following permissions:
+
+| Path | Role | Purpose |
+|------|------|---------|
+| `/` | `PVEAuditor` | Discover VMs/LXCs for inventory |
+| `/vms` | `PVEVMAdmin` | Create pre-update snapshots |
+
+Disable **Privilege Separation** on the token so it inherits the user's permissions.
+
+#### Host Requirements
+Each managed host must have an `ansible` user with:
+- SSH public key (`~/.ssh/id_ansible.pub`) in `~/.ssh/authorized_keys`
+- Passwordless sudo (`/etc/sudoers.d/10-ansible`)
+- Membership in the `docker` group (for Docker hosts)
+
+Run `bootstrap-cloudinit.yaml` to provision these on fresh VMs. For Alpine Linux hosts, ensure the `ansible` user account is not locked (`passwd -S ansible` should show `P` or `NP`, not `L`). Set a disabled-but-unlocked password with `usermod -p '*' ansible` if needed.
 
 ### Installation
 
@@ -126,7 +144,7 @@ export PROXMOX_API_TOKEN="your-token-here"
 
 The `update.yaml` playbook has special handling for different host types:
 
-- **Proxmox hypervisors** (`proxmox_hosts` group): Uses `apt dist-upgrade` for kernel updates
+- **Proxmox hypervisors** (`proxmox_nodes` group): Uses `apt dist-upgrade` for kernel updates
 - **Regular Debian hosts**: Uses `apt full-upgrade`
 - **Alpine hosts**: Uses `apk upgrade`
 - **Docker hosts**: Pulls latest images and recreates containers

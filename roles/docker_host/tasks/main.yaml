@@ -1,5 +1,5 @@
 - name: Include distribution-specific variables
-  include_vars: "{{ ansible_distribution }}.yaml"
+  ansible.builtin.include_vars: "{{ ansible_distribution }}.yaml"
 
 - name: "Install packages"
   ansible.builtin.package:
@@ -19,9 +19,15 @@
     name: docker
     state: present
 
-- name: "Create users"
+- name: "Add willem to docker group"
   ansible.builtin.user:
-    user: willem
+    name: willem
+    append: true
+    groups: docker
+
+- name: "Add ansible to docker group"
+  ansible.builtin.user:
+    name: ansible
     append: true
     groups: docker
 
@@ -29,9 +35,9 @@
   ansible.builtin.file:
     path: /home/willem/docker
     state: directory
-    mode: '0755'
+    mode: '0750'
     owner: willem
-    group: willem
+    group: docker
 
 # - name: "Update docker containers"
 #   community.docker.docker_compose_v2:
