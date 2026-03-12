@@ -9,8 +9,8 @@ Group=backup
 #Allow up to 15% CPU
 CPUQuota=15%
 #Backup settings
-Environment=PBS_REPOSITORY='{{ pbs_user }}!{{ pbs_token }}@{{ pbs_host }}:{{ pbs_datastore }}'
-Environment=PBS_PASSWORD={{ pbs_password }}
+Environment=PBS_REPOSITORY='{{ pbs_user }}!{{ pbs_token_id }}@{{ pbs_host }}:{{ pbs_datastore }}'
+Environment=PBS_PASSWORD={{ pbs_token_secret }}
 Environment=PBS_FINGERPRINT='{{ pbs_fingerprint }}'
 #Run proxmox backup client for the passed directory
 ExecStart=proxmox-backup-client backup root.pxar:/ --all-file-systems true --backup-id "%i"

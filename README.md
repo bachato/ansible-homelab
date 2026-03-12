@@ -16,11 +16,8 @@ Before updating any Proxmox VM or container, the update playbook automatically c
 ### Multi-OS Support
 Roles support both Debian and Alpine Linux, with automatic detection and OS-specific handling (package managers, init systems, privilege escalation).
 
-### Bitwarden Integration
-Includes a helper script to retrieve the Proxmox API token from Bitwarden, keeping secrets out of the repository while making local development convenient.
-
 ### CI/CD Ready
-Designed for use with Semaphore or other CI/CD tools. Secrets are managed via environment variables, with a Bitwarden helper script for local development.
+Designed for use with Semaphore or other CI/CD tools. Local secrets live in a gitignored `proxmox.cfg` file; Semaphore uses environment variables as a fallback.
 
 ## Quick Start
 
@@ -57,12 +54,9 @@ cd ansible-homelab
 # Install required collections
 ansible-galaxy install -r requirements.yml
 
-# Configure your Proxmox host
+# Configure your Proxmox connection settings
 cp proxmox.cfg.example proxmox.cfg
-# edit proxmox.cfg and set your Proxmox hostname
-
-# Set up your Proxmox API token
-export PROXMOX_API_TOKEN="your-token-here"
+# edit proxmox.cfg with your host and credentials
 
 # Test connectivity
 ansible all -m ping
@@ -121,20 +115,13 @@ The `inventory/inventory.yaml` file defines:
 
 ### Proxmox Connection Settings
 
-**Host** (`proxmox.cfg`, gitignored):
+All connection settings live in a local `proxmox.cfg` file (gitignored):
 ```bash
 cp proxmox.cfg.example proxmox.cfg
-# edit proxmox.cfg and set your Proxmox hostname
+# edit proxmox.cfg and fill in your values
 ```
 
-**API token** (`PROXMOX_API_TOKEN` environment variable):
-```bash
-# Option 1: Use the Bitwarden helper script (retrieves token from Bitwarden vault)
-eval "$(./unlock-bitwarden-proxmox.sh)"
-
-# Option 2: Set directly
-export PROXMOX_API_TOKEN="your-token-here"
-```
+For CI/CD (Semaphore), set `PVE_TOKEN_SECRET` as an environment variable instead of using the config file — it is used as a fallback when `token_secret` is absent from `proxmox.cfg`.
 
 ### Customizing for Your Environment
 1. Copy `proxmox.cfg.example` to `proxmox.cfg` and set your Proxmox hostname

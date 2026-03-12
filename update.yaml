@@ -3,10 +3,8 @@
   strategy: linear
   become: false
   vars:
-    # Proxmox API token from PROXMOX_API_TOKEN environment variable
-    # Local: source load_proxmox_token.sh to set the env var
-    # Semaphore: set PROXMOX_API_TOKEN as environment variable in task
-    proxmox_api_token: "{{ lookup('env', 'PROXMOX_API_TOKEN') }}"
+    # Token secret: read from proxmox.cfg (local) or PVE_TOKEN_SECRET env var (Semaphore/CI)
+    pve_token_secret: "{{ lookup('ini', 'token_secret section=pve file=proxmox.cfg') or lookup('env', 'PVE_TOKEN_SECRET') }}"
   pre_tasks:
     - name: "Install Python dependencies for Proxmox modules"
       ansible.builtin.pip:
@@ -20,9 +18,9 @@
       when: proxmox_vmid is defined
       community.proxmox.proxmox_snap:
         api_host: "{{ lookup('ini', 'host section=pve file=proxmox.cfg') }}"
-        api_user: ansible@pam
-        api_token_id: ansible
-        api_token_secret: "{{ proxmox_api_token }}"
+        api_user: "{{ lookup('ini', 'user section=pve file=proxmox.cfg') }}"
+        api_token_id: "{{ lookup('ini', 'token_id section=pve file=proxmox.cfg') }}"
+        api_token_secret: "{{ pve_token_secret }}"
         validate_certs: false
         vmid: "{{ proxmox_vmid }}"
         state: present

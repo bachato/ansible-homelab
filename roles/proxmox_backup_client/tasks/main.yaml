@@ -28,9 +28,9 @@
   vars:
     pbs_host: "{{ lookup('ini', 'host section=pbs file=proxmox.cfg') }}"
     pbs_user: "{{ lookup('ini', 'user section=pbs file=proxmox.cfg') }}"
-    pbs_token: "{{ lookup('ini', 'token section=pbs file=proxmox.cfg') }}"
+    pbs_token_id: "{{ lookup('ini', 'token_id section=pbs file=proxmox.cfg') }}"
     pbs_datastore: "{{ lookup('ini', 'datastore section=pbs file=proxmox.cfg') }}"
-    pbs_password: "{{ lookup('ini', 'password section=pbs file=proxmox.cfg') }}"
+    pbs_token_secret: "{{ lookup('ini', 'token_secret section=pbs file=proxmox.cfg') }}"
     pbs_fingerprint: "{{ lookup('ini', 'fingerprint section=pbs file=proxmox.cfg') }}"
 
 - name: Reload systemd daemon

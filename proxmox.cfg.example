@@ -1,10 +1,13 @@
 [pve]
 host = your-proxmox-host
+user = ansible@pam
+token_id = ansible
+token_secret = your-pve-api-token
 
 [pbs]
 host = your-pbs-host
 user = your-pbs-user@pbs
-token = your-token-name
+token_id = your-token-name
+token_secret = your-pbs-api-token
 datastore = your-datastore
-password = your-pbs-api-token
 fingerprint = your-pbs-tls-fingerprint
