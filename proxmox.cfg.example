@@ -1,2 +1,10 @@
-[proxmox]
+[pve]
 host = your-proxmox-host
+
+[pbs]
+host = your-pbs-host
+user = your-pbs-user@pbs
+token = your-token-name
+datastore = your-datastore
+password = your-pbs-api-token
+fingerprint = your-pbs-tls-fingerprint

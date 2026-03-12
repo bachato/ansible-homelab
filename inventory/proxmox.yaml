@@ -1,5 +1,5 @@
 plugin: community.proxmox.proxmox
-url: "https://{{ lookup('ini', 'host section=proxmox file=proxmox.cfg') }}:8006"
+url: "https://{{ lookup('ini', 'host section=pve file=proxmox.cfg') }}:8006"
 validate_certs: false
 user: ansible@pam
 token_id: ansible
