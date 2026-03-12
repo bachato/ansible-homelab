@@ -5,4 +5,6 @@ ungrouped:
     #MacBookAir:
     #  ansible_connection: local
     #  ansible_python_interpreter: "{{ ansible_playbook_python }}"
-    
+proxmox_nodes:
+  hosts:
+    pbs:
