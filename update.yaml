@@ -77,6 +77,13 @@
               community.general.homebrew_cask:
                 upgrade_all: true
 
+    - name: "Upgrade sendspin"
+      when: inventory_hostname in groups['role_sendspin']
+      ansible.builtin.command: /home/willem/.local/bin/uv tool upgrade sendspin
+      become: true
+      become_user: willem
+      changed_when: true
+
     - name: "Update Docker containers"
       when: inventory_hostname in groups['role_docker']
       block:
